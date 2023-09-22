@@ -11,7 +11,7 @@ import { ContactList } from './ContactList/ContactList';
 const LS_CONTACTS_KEY = 'contacts';
 
 export const App = () => {
-  const [contacts, SetContacts] = useState(() => {
+  const [contacts, setContacts] = useState(() => {
     return loadLocalStorage(LS_CONTACTS_KEY) ?? [];
   });
     const [filter, setFilter] = useState("");
