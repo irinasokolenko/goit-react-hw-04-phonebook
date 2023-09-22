@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useState, useEffect } from 'react';
 import { nanoid } from 'nanoid';
 
 import { saveLocalStorage, loadLocalStorage } from './Utils/localStorage';
@@ -10,11 +10,13 @@ import { ContactList } from './ContactList/ContactList';
 
 const LS_CONTACTS_KEY = 'contacts';
 
-export class App extends Component {
-  state = {
-    contacts: [],
-    filter: '',
-  };
+export const App = () => {
+  const [contacts, SetContacts] = useState(() => {
+    return loadLocalStorage(IS_CONTACTS_KEY) ?? [];
+  });
+  })
+  const filter
+    
 
   componentDidMount() {
     const localStorageContacts = loadLocalStorage(LS_CONTACTS_KEY);
