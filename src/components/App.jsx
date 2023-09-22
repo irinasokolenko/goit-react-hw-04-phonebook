@@ -12,74 +12,56 @@ const LS_CONTACTS_KEY = 'contacts';
 
 export const App = () => {
   const [contacts, SetContacts] = useState(() => {
-    return loadLocalStorage(IS_CONTACTS_KEY) ?? [];
+    return loadLocalStorage(LS_CONTACTS_KEY) ?? [];
   });
     const [filter, setFilter] = useState("");
     
 
-  componentDidMount() {
-    const localStorageContacts = loadLocalStorage(LS_CONTACTS_KEY);
-
-    if (localStorageContacts) this.setState({ contacts: localStorageContacts });
-  }
-
-  componentDidUpdate(_, prevState) {
-    const { contacts } = this.state;
-
-    if (prevState.contacts !== contacts) {
+    useEffect(() => {
       saveLocalStorage(LS_CONTACTS_KEY, contacts);
-    }
-  }
-
-  addContact = data => {
-    const { contacts } = this.state;
-    const newContact = {
-      id: nanoid(),
-      ...data,
+    }, [contacts]);
+  
+    const addContact = data => {
+      const newContact = {
+        id: nanoid(),
+        ...data,
+      };
+  
+      contacts.some(({ name }) => name === data.name)
+        ? alert(`${data.name} is already in contacts`)
+        : setContacts(prevContacts => [...prevContacts, newContact]);
     };
-
-    contacts.some(({ name }) => name === data.name)
-      ? alert(`${data.name} is already in contacts`)
-      : this.setState(prevState => ({
-          contacts: [...prevState.contacts, newContact],
-        }));
-  };
-
-  deleteContact = userId => {
-    this.setState(prevState => ({
-      contacts: prevState.contacts.filter(contact => contact.id !== userId),
-    }));
-  };
-
-  handleChangeFilter = ({ currentTarget: { value } }) => {
-    this.setState({ filter: value });
-  };
-
-  getFilterContacts = () => {
-    const { filter, contacts } = this.state;
-    const FilterlowerCase = filter.toLowerCase();
-    return contacts.filter(({ name }) =>
-      name.toLowerCase().includes(FilterlowerCase)
-    );
-  };
-
-  render() {
-    const { filter } = this.state;
-
+  
+    const deleteContact = userId => {
+      setContacts(prevContacts =>
+        prevContacts.filter(contact => contact.id !== userId)
+      );
+    };
+  
+    const handleChangeFilter = ({ currentTarget: { value } }) => {
+      setFilter(value);
+    };
+  
+    const getFilterContacts = () => {
+      const FilterlowerCase = filter.toLowerCase();
+      return contacts.filter(({ name }) =>
+        name.toLowerCase().includes(FilterlowerCase)
+      );
+    };
+  
     return (
       <>
         <Section title="Phonebook">
-          <ContactForm addContact={this.addContact} />
+          <ContactForm addContact={addContact} />
         </Section>
         <Section title="Contacts">
-          <Filter value={filter} handleChangeFilter={this.handleChangeFilter} />
-
+          <Filter value={filter} handleChangeFilter={handleChangeFilter} />
+  
           <ContactList
-            contacts={this.getFilterContacts()}
-            deleteContact={this.deleteContact}
+            contacts={getFilterContacts()}
+            deleteContact={deleteContact}
           />
         </Section>
       </>
     );
-  }
-}
+  };
