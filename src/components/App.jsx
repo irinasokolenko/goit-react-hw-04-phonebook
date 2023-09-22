@@ -14,8 +14,7 @@ export const App = () => {
   const [contacts, SetContacts] = useState(() => {
     return loadLocalStorage(IS_CONTACTS_KEY) ?? [];
   });
-  })
-  const filter
+    const [filter, setFilter] = useState("");
     
 
   componentDidMount() {
